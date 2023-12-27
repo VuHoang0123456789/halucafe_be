@@ -56,7 +56,11 @@ exports.ChangeItem = function (query, errorMsg) {
     });
 };
 exports.FormmatDate = function (date) {
-    return [date.getDate(), date.getMonth() + 1, date.getFullYear()].join('/');
+    return [
+        date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`,
+        date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`,
+        date.getFullYear(),
+    ].join('/');
 };
 exports.removeAccents = function (str) {
     const newStr = str

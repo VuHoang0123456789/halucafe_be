@@ -40,6 +40,7 @@ const onlineUser = new Map();
 socketIo.on('connection', (socket) => {
     ///Handle khi có connect từ client tới
     console.log('New client connected: ' + socket.id);
+    socket.emit('user-id', socket.id);
     socket.on('add-user', (userId) => {
         onlineUser.set(userId, socket.id);
     });
@@ -49,6 +50,12 @@ socketIo.on('connection', (socket) => {
         if (!senUserSocket)
             return;
         socket.to(senUserSocket).emit('send-data-server', data.msg); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+    });
+    socket.on('callUser', ({ userToCall, signalData, from, name }) => {
+        socketIo.to(userToCall).emit('callUser', { signal: signalData, from, name });
+    });
+    socket.on('answerCall', (data) => {
+        socketIo.to(data.to).emit('callAccepted', data.signal);
     });
     socket.on('disconnect', (data) => {
         console.log('Client disconnected: ', data); // Khi client disconnect thì log ra terminal.

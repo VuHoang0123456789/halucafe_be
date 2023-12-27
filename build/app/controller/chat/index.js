@@ -31,7 +31,8 @@ class ChatController {
             try {
                 const sender = req.body.sender;
                 const receiver = req.body.receiver;
-                const chats = yield ChatModel.GetAllMessage(sender, receiver);
+                const limit = req.query.limit;
+                const chats = yield ChatModel.GetAllMessage(sender, receiver, limit);
                 if (chats.length === 0)
                     return res.status(204).json({ msg: 'no content' });
                 if (!chats)

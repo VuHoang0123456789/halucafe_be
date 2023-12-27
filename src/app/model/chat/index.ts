@@ -11,17 +11,33 @@ class ChatModel {
         return await ChangeItem(query, error);
     }
 
-    async GetAllMessage(sender: string, receiver: string) {
+    async GetAllMessage(sender: string, receiver: string, limit: number) {
         const query = `
             select * from chat 
             where 
+                SPLIT_PART(cast(create_at as varchar), ' ', 1) in (
+                    select DISTINCT SPLIT_PART(cast(create_at as varchar), ' ', 1) as create_at
+                    from chat
+                    where sender = 'vuhuyhoang2104@gmail.com' and receiver = 'hallu-coffee'
+                    order by create_at desc
+                    limit ${limit}
+                ) and
                 sender = '${sender}' and receiver = '${receiver}' or 
-                sender = '${receiver}' and receiver = '${sender}' 
-            order by create_at asc
+                sender = '${receiver}' and receiver = '${sender}'
+            order by create_at desc;
         `;
+
         const error = 'Error in Chatmodel/AddMessage';
 
-        return await ReturnItems(query, error);
+        const chats = await ReturnItems(query, error);
+
+        const ReverseChats = [];
+
+        for (let i = chats.length - 1; i >= 0; i--) {
+            ReverseChats.push(chats[i]);
+        }
+
+        return ReverseChats;
     }
 }
 

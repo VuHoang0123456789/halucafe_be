@@ -14,7 +14,7 @@ class OrderModel {
     GetPayTypes() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const queryStr = `select * from pay_type`;
+                const queryStr = `select * from pay_type order by pay_type_id asc`;
                 const errorMsg = 'OrderModel/GetPayTypes';
                 return yield ReturnItems(queryStr, errorMsg);
             }

@@ -119,7 +119,7 @@ class ProductController {
     GetTradeMarks(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const category_id = req.params.category_id || ' ';
+                const category_id = req.params.category_id;
                 const trademarks = yield productModel.GetProductTrademarks(category_id);
                 if (trademarks.length === 0)
                     return res.status(204).json({ msg: 'no content' });

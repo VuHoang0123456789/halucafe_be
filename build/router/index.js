@@ -12,16 +12,16 @@ const tableRouter = require('./table');
 const postsRouter = require('./posts');
 const commentsRouter = require('./comments');
 function Route(app) {
-    app.use('/product', productRouter);
-    app.use('/account', accountRouter);
-    app.use('/auth', authRouter);
-    app.use('/address', addressRouter);
-    app.use('/order', orderRouter);
-    app.use('/category', categoryRouter);
-    app.use('/cart', cartRouter);
-    app.use('/chat', chatRouter);
-    app.use('/table', tableRouter);
-    app.use('/posts', postsRouter);
-    app.use('/comments', commentsRouter);
+    app.use('/api/product', productRouter);
+    app.use('/api/account', accountRouter);
+    app.use('/api/auth', authRouter);
+    app.use('/api/address', addressRouter);
+    app.use('/api/order', orderRouter);
+    app.use('/api/category', categoryRouter);
+    app.use('/api/cart', cartRouter);
+    app.use('/api/chat', chatRouter);
+    app.use('/api/table', tableRouter);
+    app.use('/api/posts', postsRouter);
+    app.use('/api/comments', commentsRouter);
 }
 module.exports = Route;

@@ -22,7 +22,7 @@ class AccountModel {
                 let queryStr = `
                 select
                     account.email, show_name, customer.customer_id, refresh_token,
-                    CONCAT(address_info, ', ', ward_name, ', ', district_name, ', ', province_name) address_full
+                    CONCAT(address_info, ', ', ward_name, ', ', district_name, ', ', province_name) address_full, avatar
                 from
                     account join customer on account.email = customer.email
                     join address on address.customer_id = customer.customer_id
@@ -31,13 +31,13 @@ class AccountModel {
                 let data = yield client.query(queryStr);
                 if (!data.rows[0])
                     queryStr = `
-            select
-                account.email, show_name, customer.customer_id, refresh_token,
-                CONCAT('Chưa có địa chỉ cụ thể, vui lòng cài đặt địa chỉ để nhận hàng!') address_full
-            from
-                account join customer on account.email = customer.email
-            where
-                account.email = '${email}'`;
+                select
+                    account.email, show_name, customer.customer_id, refresh_token,
+                    CONCAT('Chưa có địa chỉ cụ thể, vui lòng cài đặt địa chỉ để nhận hàng!') address_full, avatar
+                from
+                    account join customer on account.email = customer.email
+                where
+                    account.email = '${email}'`;
                 data = yield client.query(queryStr);
                 yield client.end();
                 return data.rows[0];
@@ -142,18 +142,36 @@ class AccountModel {
             try {
                 const client = yield db();
                 const queryStr = `
-            update account set
-                pass_word = '${passWord}', refresh_token = '${refreshToken}', 
-                type_account = '${typeAccount}', show_name = '${showName}' 
-            where 
-                email = '${email}'`;
-                console.log(refreshToken);
+                update account set
+                    pass_word = '${passWord}', refresh_token = '${refreshToken}', 
+                    type_account = '${typeAccount}', show_name = '${showName}' 
+                where 
+                    email = '${email}'`;
                 const data = yield client.query(queryStr);
                 yield client.end();
                 return data || false;
             }
             catch (error) {
                 console.log(`Error in accountModel/UpdateAccount: ${error}`);
+                return null;
+            }
+        });
+    }
+    UpdateAvatar(customer_id, avatar) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const client = yield db();
+                const queryStr = `
+                update account set avatar = '${avatar}' 
+                where email = (
+                    select email from customer where customer_id = ${customer_id}
+                )`;
+                const data = yield client.query(queryStr);
+                yield client.end();
+                return data || false;
+            }
+            catch (error) {
+                console.log(`Error in accountModel/UpdateAvatar: ${error}`);
                 return null;
             }
         });

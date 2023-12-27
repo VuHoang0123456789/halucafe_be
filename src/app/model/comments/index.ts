@@ -15,7 +15,8 @@ class CommentModel {
     }
 
     async AddNewFeedBack(feedback: feedbackType) {
-        const query = `call add_new_feedback(row(${feedback.author_id}, '${feedback.note}', ${feedback.comment_id}, '${feedback.create_at}', ${feedback.receiver_id}))`;
+        const query = `call add_new_feedback(row(${feedback.author_id}, '${feedback.note}', '${feedback.comment_id}', '${feedback.create_at}', ${feedback.receiver_id}))`;
+        console.log(query);
         const error = 'Error in CommentModel/AddNewFeedBack';
 
         return await ChangeItem(query, error);
@@ -26,13 +27,14 @@ class CommentModel {
         const query = `
             select 
                 comment_id_lv1 as comment_id, note, update_at, create_at, slug, 
-                customer.customer_id as author_id, customer.full_name as author_name,
+                customer.customer_id as author_id, customer.full_name as author_name, avatar,
                 (select count(*) from like_of_comment where comment_id_lv1 = list_comment_lv1.comment_id_lv1) as like_count,
                 (select count(*) from dislike_of_comment where comment_id_lv1 = list_comment_lv1.comment_id_lv1) as dislike_count,
                 (select count(*) from like_of_comment where comment_id_lv1 = list_comment_lv1.comment_id_lv1 and customer_id = ${customer_id}) as is_like,
 				(select count(*) from dislike_of_comment where comment_id_lv1 = list_comment_lv1.comment_id_lv1 and customer_id = ${customer_id}) as is_dislike
             from 
-                list_comment_lv1 join customer on customer.customer_id = list_comment_lv1.customer_id 
+                list_comment_lv1 join customer on customer.customer_id = list_comment_lv1.customer_id
+                join account on customer.email = account.email
             where 
                 slug = '${post_slug}'
             order by create_at desc;
@@ -47,13 +49,14 @@ class CommentModel {
                     note, update_at, create_at, customer.customer_id as author_id, customer.full_name as author_name,
                     (select count(*) from like_of_comment where comment_id_lv2 = comment_id_lv2) as like_count,
                     (select count(*) from dislike_of_comment where comment_id_lv2 = comment_id_lv2) as dislike_count,
-                    receiver_feedback.customer_id as receiver_id, 
+                    receiver_feedback.customer_id as receiver_id, avatar,
                     (select full_name from customer where customer_id = receiver_feedback.customer_id) as receiver_name,
                     (select count(*) from like_of_comment where comment_id_lv2 = list_comment_lv2.comment_id_lv2 and customer_id = ${customer_id}) as is_like,
                     (select count(*) from dislike_of_comment where comment_id_lv2 = list_comment_lv2.comment_id_lv2 and customer_id = ${customer_id}) as is_dislike
                 from 
                     list_comment_lv2 join customer on customer.customer_id = list_comment_lv2.customer_id
                     join receiver_feedback on receiver_feedback.comment_id_lv2 = list_comment_lv2.comment_id_lv2
+                    join account on customer.email = account.email
                 where comment_id_lv1 = '${commentNoFeedback[i].comment_id}'
                 order by create_at desc;
             `;

@@ -22,7 +22,7 @@ interface Order {
 class OrderModel {
     async GetPayTypes() {
         try {
-            const queryStr = `select * from pay_type`;
+            const queryStr = `select * from pay_type order by pay_type_id asc`;
             const errorMsg = 'OrderModel/GetPayTypes';
 
             return await ReturnItems(queryStr, errorMsg);

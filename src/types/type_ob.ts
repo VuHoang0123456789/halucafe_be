@@ -27,6 +27,7 @@ export interface CommentsType {
     like_count?: number;
     is_like?: number;
     is_dislike?: number;
+    avatar: string;
     feebacks?: feedbackType[];
 }
 
@@ -43,5 +44,6 @@ export interface feedbackType {
     receiver_id: number;
     receiver_name?: string;
     is_like?: number;
+    avatar: string;
     is_dislike?: number;
 }

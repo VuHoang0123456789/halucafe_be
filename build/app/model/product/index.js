@@ -36,21 +36,11 @@ class ProductModel {
     GetProductTrademarks(category_id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let queryStr = '';
-                if (category_id !== ' ') {
-                    queryStr = `
-                    SELECT DISTINCT(trademark) as key, trademark as value
-                    from product 
-                    where category_id in (${category_id}) and trademark not in ('Đang cập nhật')
-                `; //câu truy vấn
-                }
-                else {
-                    queryStr = `
-                    SELECT DISTINCT(trademark) as key, trademark as value
-                    from product 
-                    where trademark not in ('Đang cập nhật')
-                `; //câu truy vấn
-                }
+                const queryStr = `
+            SELECT DISTINCT(trademark) as key, trademark as value
+            from product 
+            where category_id in (${category_id}) and trademark not in ('Đang cập nhật')
+        `; //câu truy vấn
                 const errorMsg = 'productModel/GetProductTrademarks'; //Địa chỉ có lỗi
                 return ReturnItems(queryStr, errorMsg); //trả về dữ liệu
             }
